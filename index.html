@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sociogram — Microsoft Forms</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f6f3;
+  --surface:#ffffff;
+  --border:#e0ddd6;
+  --border-mid:#c5c2bb;
+  --text:#1c1b18;
+  --text-muted:#6b6860;
+  --text-hint:#a09e99;
+  --blue:#185FA5;
+  --blue-light:#E6F1FB;
+  --blue-dark:#0C447C;
+  --green:#1D9E75;
+  --green-light:#EAF3DE;
+  --green-dark:#173404;
+  --red:#E24B4A;
+  --red-light:#FCEBEB;
+  --red-dark:#501313;
+  --teal-light:#E1F5EE;
+  --amber-light:#FAEEDA;
+  --amber-text:#412402;
+  --amber-border:#BA7517;
+  --radius:10px;
+  --radius-sm:6px;
+  --radius-xs:4px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh}
+
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:100;gap:1rem}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;color:var(--text);white-space:nowrap}
+.logo-icon{width:30px;height:30px;background:var(--blue);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-icon svg{width:17px;height:17px;fill:none;stroke:white;stroke-width:2;stroke-linecap:round}
+.header-right{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-muted)}
+
+main{max-width:880px;margin:0 auto;padding:2rem 1.5rem 4rem}
+
+.steps-nav{display:flex;margin-bottom:2rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.step-tab{flex:1;padding:11px 6px;text-align:center;font-size:12px;color:var(--text-muted);background:transparent;border-right:1px solid var(--border);transition:background 0.15s;cursor:default;line-height:1.3}
+.step-tab:last-child{border-right:none}
+.step-tab.done{background:var(--green-light);color:var(--green-dark)}
+.step-tab.done .tab-num{background:var(--green);color:white}
+.step-tab.active{background:var(--surface);color:var(--text);font-weight:600}
+.step-tab.active .tab-num{background:var(--blue);color:white}
+.tab-num{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--border);color:var(--text-muted);font-size:10px;font-weight:700;margin-right:5px;transition:background 0.15s,color 0.15s}
+
+.step{display:none}.step.active{display:block}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.25rem}
+.card-title{font-size:16px;font-weight:600;margin-bottom:0.4rem;color:var(--text)}
+.card-sub{font-size:13px;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.6}
+
+label.field-label{display:block;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:5px}
+input[type=text],input[type=email],select,textarea{
+  padding:9px 12px;border:1px solid var(--border-mid);border-radius:var(--radius-sm);
+  font-size:14px;font-family:inherit;color:var(--text);background:var(--surface);width:100%;
+  transition:border-color 0.15s,box-shadow 0.15s;appearance:none
+}
+input[type=text]:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(24,95,165,0.12)}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6860' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px}
+textarea{resize:vertical;min-height:110px}
+textarea.mono{font-family:'Courier New',monospace;font-size:12px}
+
+.btn{padding:9px 18px;border-radius:var(--radius-sm);border:1px solid var(--border-mid);background:var(--surface);cursor:pointer;font-size:14px;font-family:inherit;color:var(--text);transition:background 0.15s,border-color 0.15s,transform 0.1s;font-weight:500;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:var(--bg);border-color:var(--text-hint)}
+.btn:active{transform:scale(0.98)}
+.btn-primary{background:var(--blue);color:white;border-color:var(--blue)}
+.btn-primary:hover{background:var(--blue-dark);border-color:var(--blue-dark)}
+.btn-sm{padding:6px 13px;font-size:13px}
+.btn-xs{padding:4px 10px;font-size:12px}
+.btn-ghost{border-color:transparent;background:transparent;color:var(--blue)}
+.btn-ghost:hover{background:var(--blue-light);border-color:transparent}
+.btn-danger{color:var(--red);border-color:transparent;background:transparent}
+.btn-danger:hover{background:var(--red-light)}
+
+.row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.row-end{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-bottom:8px}
+
+.tag{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;font-size:12px;background:var(--bg);border:1px solid var(--border);margin:3px;color:var(--text)}
+.tag-x{cursor:pointer;color:var(--text-muted);line-height:1;font-size:15px}
+.tag-x:hover{color:var(--red)}
+
+.info-box{background:var(--blue-light);border-left:3px solid var(--blue);padding:0.9rem 1.1rem;font-size:13px;color:#0a3d6e;margin-bottom:1.25rem;line-height:1.7;border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+.info-box strong{display:block;margin-bottom:1px;font-weight:600}
+.warn-box{background:var(--amber-light);border-left:3px solid var(--amber-border);padding:0.9rem 1.1rem;font-size:13px;color:var(--amber-text);margin-bottom:1rem;line-height:1.7;border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+.success-box{background:var(--green-light);border-left:3px solid var(--green);padding:0.75rem 1rem;font-size:13px;color:var(--green-dark);margin-bottom:1rem;border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;gap:8px;flex-wrap:wrap}
+
+.q-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.q-item:last-child{border-bottom:none}
+.q-badge{padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.q-badge.pos{background:var(--green-light);color:var(--green-dark)}
+.q-badge.neg{background:var(--red-light);color:var(--red-dark)}
+.lj-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:1rem 0.75rem;border-radius:var(--radius);border:2px solid var(--border);background:var(--surface);cursor:pointer;font-family:inherit;transition:border-color 0.15s,background 0.15s,transform 0.1s;text-align:center}
+.lj-btn:hover{border-color:var(--blue);background:var(--blue-light);transform:translateY(-1px)}
+.lj-btn.active{border-color:var(--blue);background:var(--blue);color:white}
+.lj-btn.active .lj-sub{color:rgba(255,255,255,0.8)}
+.lj-num{font-size:14px;font-weight:600;color:var(--text)}
+.lj-btn.active .lj-num{color:white}
+.lj-sub{font-size:11px;color:var(--text-muted)}
+
+.mapping-block{border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:10px;overflow:hidden}
+.mapping-block-head{background:var(--bg);padding:8px 12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.mapping-block-body{padding:10px 12px}
+.cb-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.cb-grid label{display:flex;align-items:center;gap:7px;font-size:13px;padding:4px 6px;border-radius:var(--radius-xs);cursor:pointer;transition:background 0.1s}
+.cb-grid label:hover{background:var(--bg)}
+input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--blue);flex-shrink:0}
+
+.q-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.q-tab{padding:7px 15px;border-radius:20px;border:1px solid var(--border-mid);background:transparent;cursor:pointer;font-size:13px;color:var(--text-muted);font-family:inherit;transition:background 0.15s,color 0.15s,border-color 0.15s}
+.q-tab:hover{background:var(--bg)}
+.q-tab.active{background:var(--blue);color:white;border-color:var(--blue);font-weight:600}
+.q-tab.pos-tab.active{background:var(--green);border-color:var(--green)}
+.q-tab.neg-tab.active{background:var(--red);border-color:var(--red)}
+
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:1.5rem}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center}
+.stat-card .num{font-size:26px;font-weight:700;color:var(--text);line-height:1.2}
+.stat-card .lbl{font-size:11px;color:var(--text-muted);margin-top:3px;text-transform:uppercase;letter-spacing:0.04em}
+
+.matrix-outer{overflow-x:auto;border-radius:var(--radius-sm);border:1px solid var(--border)}
+table.mx{border-collapse:collapse;font-size:12px;background:var(--surface);table-layout:auto}
+table.mx th,table.mx td{border:1px solid var(--border);padding:6px 9px;text-align:center;white-space:nowrap}
+table.mx th{background:var(--bg);font-weight:600;font-size:11px;color:var(--text-muted)}
+table.mx th.rh{text-align:left;font-size:12px;color:var(--text);min-width:90px}
+td.self{background:var(--bg);color:var(--text-hint)}
+td.cp{background:#C0DD97;color:#173404;font-weight:600}
+td.cn{background:#F7C1C1;color:#501313;font-weight:600}
+td.cm{background:#9FE1CB;color:#04342C;font-weight:600}
+
+svg.network{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);display:block;cursor:default}
+
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--text-muted)}
+.legend span{display:flex;align-items:center;gap:6px}
+.ld{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+.analysis-table{width:100%;border-collapse:collapse;font-size:13px}
+.analysis-table th{padding:9px 10px;text-align:left;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-muted);border-bottom:2px solid var(--border)}
+.analysis-table td{padding:9px 10px;border-bottom:1px solid var(--border)}
+.analysis-table tr:last-child td{border-bottom:none}
+.analysis-table tr:hover td{background:var(--bg)}
+.analysis-table td:nth-child(2),.analysis-table td:nth-child(3),.analysis-table td:nth-child(4){text-align:center}
+
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-pop{background:var(--green-light);color:var(--green-dark)}
+.badge-risk{background:var(--red-light);color:var(--red-dark)}
+.badge-avg{background:var(--bg);color:var(--text-muted);border:1px solid var(--border)}
+.badge-inv{background:var(--amber-light);color:var(--amber-text)}
+
+.at-box{background:var(--red-light);border-left:3px solid var(--red);padding:0.7rem 1rem;margin-bottom:7px;font-size:13px;color:var(--red-dark);border-radius:0 var(--radius-xs) var(--radius-xs) 0}
+.aw-box{background:var(--amber-light);border-left:3px solid var(--amber-border);padding:0.7rem 1rem;margin-bottom:7px;font-size:13px;color:var(--amber-text);border-radius:0 var(--radius-xs) var(--radius-xs) 0}
+
+.compare-table{width:100%;border-collapse:collapse;font-size:13px}
+.compare-table th{padding:8px 10px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-muted);border-bottom:2px solid var(--border)}
+.compare-table th.center{text-align:center}
+.compare-table td{padding:8px 10px;border-bottom:1px solid var(--border)}
+.compare-table td.center{text-align:center}
+.compare-table tr:last-child td{border-bottom:none}
+.bar-wrap{height:5px;border-radius:3px;background:var(--border);width:60px;margin:3px auto 0}
+.bar-fill{height:100%;border-radius:3px}
+
+.section{margin-bottom:1.5rem}
+.section-head{font-size:16px;font-weight:600;margin-bottom:0.4rem}
+.section-sub{font-size:13px;color:var(--text-muted);margin-bottom:0.9rem;line-height:1.55}
+
+.print-tip{background:var(--teal-light);border:1px solid #9FE1CB;border-radius:var(--radius-sm);padding:0.75rem 1rem;font-size:13px;color:#085041;margin-bottom:1.25rem;display:flex;align-items:center;gap:8px}
+.print-tip svg{width:16px;height:16px;flex-shrink:0}
+
+.result-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px}
+.result-title{font-size:22px;font-weight:700;color:var(--text)}
+.result-meta{font-size:13px;color:var(--text-muted)}
+
+@media print{
+  /* Forceer achtergrondkleuren — browsers slaan deze anders over */
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
+
+  header,.steps-nav,.nav-row,.btn,.print-tip,.q-tabs{display:none!important}
+  body{background:white}
+  main{padding:0;max-width:100%}
+  .card{border:1px solid #ccc;break-inside:avoid;margin-bottom:1rem;box-shadow:none}
+  .stat-card{border:1px solid #ccc;break-inside:avoid}
+  .stats-grid{break-inside:avoid}
+  .matrix-outer{break-inside:avoid}
+  svg.network{height:320px!important}
+  .result-header{margin-bottom:0.5rem}
+
+  /* Tabelkleuren expliciet herhalen zodat browsers ze niet negeren */
+  td.cp{background:#C0DD97!important;color:#173404!important}
+  td.cn{background:#F7C1C1!important;color:#501313!important}
+  td.cm{background:#9FE1CB!important;color:#04342C!important}
+  td.self{background:#f0ede8!important}
+  .badge-pop{background:#EAF3DE!important;color:#173404!important}
+  .badge-risk{background:#FCEBEB!important;color:#501313!important}
+  .badge-inv{background:#FAEEDA!important;color:#412402!important}
+  .stat-card .num{color:#1c1b18!important}
+  .at-box{background:#FCEBEB!important;color:#501313!important;border-left:3px solid #E24B4A!important}
+  .aw-box{background:#FAEEDA!important;color:#412402!important;border-left:3px solid #BA7517!important}
+}
+@media(max-width:600px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .cb-grid{grid-template-columns:1fr}
+  header{padding:0 1rem}
+  main{padding:1rem 1rem 3rem}
+  .step-tab .tab-label{display:none}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@3.28.0/lib/msal-browser.min.js"></script>
+<script>
+window._portalToken = null;
+window._portalEmail = '';
+window._appBooted = false;
+window.addEventListener('message', function(event) {
+  if (event.origin !== 'https://lon-ka.github.io') return;
+  if (!event.data || event.data.type !== 'MSAL_TOKEN') return;
+  if (window._portalToken) return;
+  window._portalToken = event.data.token;
+  window._portalEmail = event.data.email || '';
+  if (!window._appBooted) setTimeout(function() { if (!window._appBooted) boot(); }, 100);
+});
+</script>
+</head>
+<body>
+
+<!-- Auth overlay -->
+<div id="auth-overlay" style="display:none;position:fixed;inset:0;background:linear-gradient(135deg,#0F2518,#1A6B4A);display:flex;align-items:center;justify-content:center;z-index:1000">
+  <div style="background:#fff;border-radius:14px;padding:32px 36px;max-width:380px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1A6B4A" stroke-width="1.5" style="margin-bottom:12px"><circle cx="12" cy="10" r="3"/><path d="M3 20c0-4.4 4-8 9-8s9 3.6 9 8"/></svg>
+    <h2 style="font-size:1.2rem;font-weight:700;color:#1c1b18;margin-bottom:6px">LON-Sociogram</h2>
+    <p style="font-size:.9rem;color:#6b6860;margin-bottom:24px">Scholengroep Londerzeel BaO<br>Meld aan met je schoolaccount om verder te gaan.</p>
+    <button onclick="doLogin()" style="background:#1A6B4A;color:#fff;border:none;border-radius:9px;padding:12px 28px;font-size:.95rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:10px;font-family:inherit">
+      <svg width="18" height="18" viewBox="0 0 21 21"><rect width="10" height="10" fill="#F25022"/><rect x="11" width="10" height="10" fill="#7FBA00"/><rect y="11" width="10" height="10" fill="#00A4EF"/><rect x="11" y="11" width="10" height="10" fill="#FFB900"/></svg>
+      Aanmelden met Microsoft 365
+    </button>
+    <p id="auth-err" style="margin-top:12px;font-size:.85rem;color:#E24B4A;display:none"></p>
+  </div>
+</div>
+
+
+<header style="position:relative">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 20 20">
+        <circle cx="10" cy="3.5" r="2" stroke-width="1.5"/>
+        <circle cx="3" cy="16" r="2" stroke-width="1.5"/>
+        <circle cx="17" cy="16" r="2" stroke-width="1.5"/>
+        <line x1="10" y1="5.5" x2="4" y2="14" stroke-width="1.5"/>
+        <line x1="10" y1="5.5" x2="16" y2="14" stroke-width="1.5"/>
+        <line x1="5" y1="16" x2="15" y2="16" stroke-width="1.5"/>
+      </svg>
+    </div>
+    Sociogram
+  </div>
+  <div class="header-right">
+    <span id="klasMeta"></span>
+    <button class="btn btn-xs btn-ghost" onclick="window.print()" style="padding:4px 10px">Afdrukken</button>
+  </div>
+  <div style="position:absolute;top:12px;right:16px;font-size:11px;color:#6b6860"><span id="user-display"></span></div>
+</header>
+
+<main>
+  <div class="steps-nav">
+    <div class="step-tab active" id="tab1"><span class="tab-num">1</span><span class="tab-label">Leerlingen</span></div>
+    <div class="step-tab" id="tab2"><span class="tab-num">2</span><span class="tab-label">Vragen</span></div>
+    <div class="step-tab" id="tab3"><span class="tab-num">3</span><span class="tab-label">Data</span></div>
+    <div class="step-tab" id="tab4"><span class="tab-num">4</span><span class="tab-label">Resultaten</span></div>
+  </div>
+
+  <!-- ── STAP 1 ── -->
+  <div class="step active" id="step1">
+    <div class="card">
+      <div class="card-title">Klas en leerlingen</div>
+      <div class="card-sub">Voer de klasgegevens in en voeg leerlingen toe. Je kunt ook een lijst plakken (één naam per regel).</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.25rem">
+        <div><label class="field-label">Klas / groep</label><input type="text" id="klasInput" placeholder="bijv. 3A"></div>
+        <div><label class="field-label">Schooljaar</label><input type="text" id="jaarInput" placeholder="bijv. 2025-2026"></div>
+      </div>
+      <label class="field-label">Leerling toevoegen</label>
+      <div class="row">
+        <input type="text" id="nameInput" placeholder="Voornaam..." onkeydown="if(event.key==='Enter')addStudent()" style="flex:1">
+        <button class="btn btn-primary btn-sm" onclick="addStudent()">+ Toevoegen</button>
+      </div>
+      <label class="field-label" style="margin-top:0.75rem">Of plak een lijst (één naam per regel)</label>
+      <div class="row" style="align-items:flex-start">
+        <textarea id="bulkInput" placeholder="Emma&#10;Lena&#10;Thomas&#10;..." style="flex:1;min-height:80px"></textarea>
+        <button class="btn btn-sm" onclick="bulkAdd()" style="align-self:flex-start">Importeren</button>
+      </div>
+      <div id="studentList" style="min-height:32px;margin-top:4px"></div>
+      <div style="margin-top:0.9rem;padding-top:0.9rem;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-xs btn-ghost" onclick="loadDemo()">Demo-klas laden (10 leerlingen)</button>
+        <button class="btn btn-xs btn-ghost btn-danger" onclick="clearStudents()">Alles wissen</button>
+      </div>
+    </div>
+    <div class="nav-row">
+      <span style="font-size:13px;color:var(--text-muted)" id="studentCount">0 leerlingen</span>
+      <button class="btn btn-primary" onclick="goStep(2)">Vragen instellen →</button>
+    </div>
+  </div>
+
+  <!-- ── STAP 2 ── -->
+  <div class="step" id="step2">
+    <div class="card">
+      <div class="card-title">Leerjaar kiezen</div>
+      <div class="card-sub">Kies het leerjaar van de klas. De bijhorende vragen worden automatisch ingeladen op basis van de vaste vragenset van de school.</div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:1.25rem" id="leerjaarGrid">
+        <button class="lj-btn" onclick="setLeerjaar('1lj')">
+          <span class="lj-num">1ste leerjaar</span>
+          <span class="lj-sub">2 vragen</span>
+        </button>
+        <button class="lj-btn" onclick="setLeerjaar('2lj')">
+          <span class="lj-num">2de leerjaar</span>
+          <span class="lj-sub">4 vragen</span>
+        </button>
+        <button class="lj-btn" onclick="setLeerjaar('3lj')">
+          <span class="lj-num">3de leerjaar</span>
+          <span class="lj-sub">4 vragen</span>
+        </button>
+        <button class="lj-btn" onclick="setLeerjaar('4lj')">
+          <span class="lj-num">4de leerjaar</span>
+          <span class="lj-sub">6 vragen</span>
+        </button>
+        <button class="lj-btn" onclick="setLeerjaar('5lj')">
+          <span class="lj-num">5de leerjaar</span>
+          <span class="lj-sub">6 vragen</span>
+        </button>
+        <button class="lj-btn" onclick="setLeerjaar('6lj')">
+          <span class="lj-num">6de leerjaar</span>
+          <span class="lj-sub">6 vragen</span>
+        </button>
+      </div>
+
+      <div id="questionList" style="margin-bottom:1rem"></div>
+
+      <div id="customQuestionBlock" style="display:none">
+        <div style="border-top:1px solid var(--border);padding-top:1rem;margin-top:0.5rem">
+          <label class="field-label">Extra vraag toevoegen (optioneel)</label>
+          <div class="row">
+            <input type="text" id="qNameInput" placeholder="Vraagtitel..." style="flex:1" onkeydown="if(event.key==='Enter')addQuestion()">
+            <select id="qTypeInput" style="width:auto;flex-shrink:0">
+              <option value="pos">Positief</option>
+              <option value="neg">Negatief</option>
+            </select>
+            <button class="btn btn-sm" onclick="addQuestion()">+ Toevoegen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="btn" onclick="goStep(1)">← Terug</button>
+      <button class="btn btn-primary" onclick="goStep(3)">Data importeren →</button>
+    </div>
+  </div>
+
+  <!-- ── STAP 3 ── -->
+  <div class="step" id="step3">
+    <div class="card">
+      <div class="card-title">CSV-data importeren vanuit Microsoft Forms</div>
+      <div class="info-box">
+        <strong>Hoe exporteer je vanuit Microsoft Forms?</strong>
+        1. Open je formulier → tabblad <strong>Antwoorden</strong><br>
+        2. Klik op <strong>Openen in Excel</strong><br>
+        3. Sla op als <strong>CSV (komma's als scheidingsteken)</strong><br>
+        4. Open het CSV-bestand in Kladblok, selecteer alles en plak hieronder
+      </div>
+      <label class="field-label">CSV-inhoud plakken</label>
+      <textarea class="mono" id="csvInput" placeholder="Naam,Samenwerken 1,Samenwerken 2,Pauze 1,Pauze 2,Probleem 1,Liever niet&#10;Emma,Lena,Sofie,Mia,Olivia,Lena,Thomas&#10;..."></textarea>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <button class="btn btn-primary btn-sm" onclick="parseCSV()">CSV verwerken</button>
+        <button class="btn btn-sm btn-ghost" onclick="loadDemoData()">Demo-data laden</button>
+      </div>
+      <div id="csvDebug" style="display:none;margin-top:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:12px;color:var(--text-muted);line-height:1.7"></div>
+    </div>
+
+    <div id="mappingCard" style="display:none" class="card">
+      <div class="card-title">Kolommen koppelen per vraag</div>
+      <div class="card-sub">Selecteer voor elke vraag welke CSV-kolommen de antwoorden bevatten. De tool probeert dit automatisch te herkennen — controleer en pas aan waar nodig.</div>
+      <label class="field-label" style="margin-bottom:6px">Naam-kolom</label>
+      <select id="mapName" style="width:auto;min-width:220px;margin-bottom:1.25rem"></select>
+      <div id="mappingUI"></div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:0.5rem;flex-wrap:wrap">
+        <button class="btn btn-primary btn-sm" onclick="applyMapping()">Koppeling bevestigen</button>
+        <span id="mappingStatus" style="font-size:13px;color:var(--green)"></span>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn" onclick="goStep(2)">← Terug</button>
+      <button class="btn btn-primary" onclick="goStep(4)">Resultaten bekijken →</button>
+    </div>
+  </div>
+
+  <!-- ── STAP 4 ── -->
+  <div class="step" id="step4">
+    <div class="print-tip">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="14" height="10" rx="1"/><path d="M7 7V4a1 1 0 011-1h4a1 1 0 011 1v3"/><circle cx="10" cy="13" r="1.5"/></svg>
+      Gebruik <strong>Ctrl+P</strong> om dit rapport af te drukken of op te slaan als PDF.
+    </div>
+
+    <div class="result-header">
+      <div>
+        <div class="result-title" id="resultKlas">Klas</div>
+        <div class="result-meta" id="resultMeta"></div>
+      </div>
+      <button class="btn btn-sm btn-ghost" onclick="copyResultsText()">Kopiëren als tekst (Excel)</button>
+    </div>
+
+    <div class="stats-grid" id="statsGrid"></div>
+
+    <div class="q-tabs" id="qTabs"></div>
+
+    <div id="mainView">
+      <div class="card section">
+        <div class="section-head" id="matrixTitle">Sociomatrix</div>
+        <div class="section-sub">Groen = positieve keuze &nbsp;·&nbsp; Rood = negatieve keuze &nbsp;·&nbsp; Turquoise = wederzijdse positieve keuze</div>
+        <div class="matrix-outer"><div id="matrixWrap"></div></div>
+      </div>
+
+      <div class="card section">
+        <div class="section-head" id="networkTitle">Relatiediagram</div>
+        <div class="section-sub" id="networkSub">Knooppuntgrootte geeft populariteit aan. Pijlen tonen keuzerichting.</div>
+        <svg class="network" id="network" height="460" viewBox="0 0 840 460"></svg>
+        <div class="legend">
+          <span><span class="ld" style="background:#1D9E75"></span>Positieve keuze</span>
+          <span><span class="ld" style="background:#E24B4A"></span>Negatieve keuze</span>
+          <span><span class="ld" style="background:#378ADD"></span>Wederzijds positief</span>
+          <span style="align-items:center"><span style="display:inline-block;width:20px;height:2px;background:var(--red);opacity:0.7;margin-right:4px;border-top:2px dashed var(--red);margin-bottom:0"></span>Stippellijn = negatief</span>
+        </div>
+      </div>
+
+      <div class="card section">
+        <div class="section-head" id="analysisTitle">Analyse per leerling</div>
+        <div id="analysisWrap"></div>
+      </div>
+    </div>
+
+    <div id="compareView" style="display:none">
+      <div class="card section">
+        <div class="section-head">Vergelijking over alle vragen</div>
+        <div class="section-sub">Ontvangen keuzes per leerling per vraag. De balk toont de score relatief aan de hoogste score.</div>
+        <div style="overflow-x:auto"><div id="compareWrap"></div></div>
+      </div>
+    </div>
+
+    <div class="card section">
+      <div class="section-head">Aandachtspunten</div>
+      <div id="attentionWrap"></div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn" onclick="goStep(3)">← Terug</button>
+      <span style="font-size:12px;color:var(--text-hint)">Alle data blijft in je browser — niets wordt opgeslagen.</span>
+    </div>
+  </div>
+</main>
+
+<script>
+'use strict';
+let students=[];
+let questions=[];
+let votes={};
+let csvHeaders=[];
+let csvRows=[];
+let mappingApplied=false;
+let activeQ='__all__';
+
+/* ── NAVIGATIE ── */
+function goStep(n){
+  if(n===2&&students.length===0){alert('Voeg eerst minstens één leerling toe.');return;}
+  if(n===3&&questions.length===0){alert('Kies eerst een leerjaar in stap 2.');return;}
+  if(n===4&&!mappingApplied){alert('Verwerk de CSV-data en bevestig de koppeling.');return;}
+  document.querySelectorAll('.step').forEach((s,i)=>s.classList.toggle('active',i===n-1));
+  document.querySelectorAll('.step-tab').forEach((t,i)=>{
+    t.classList.remove('active','done');
+    if(i<n-1)t.classList.add('done');
+    if(i===n-1)t.classList.add('active');
+  });
+  if(n===4)renderResults();
+  window.scrollTo(0,0);
+}
+
+/* ── STAP 1: LEERLINGEN ── */
+function addStudent(){
+  const inp=document.getElementById('nameInput');
+  const v=inp.value.trim();
+  if(!v||students.includes(v)){inp.value='';return;}
+  students.push(v);inp.value='';inp.focus();
+  renderStudents();
+}
+function bulkAdd(){
+  const raw=document.getElementById('bulkInput').value.trim();
+  raw.split('\n').forEach(l=>{const n=l.trim();if(n&&!students.includes(n))students.push(n);});
+  document.getElementById('bulkInput').value='';
+  renderStudents();
+}
+function removeStudent(n){students=students.filter(s=>s!==n);renderStudents();}
+function clearStudents(){students=[];renderStudents();}
+function renderStudents(){
+  document.getElementById('studentList').innerHTML=
+    students.map(s=>`<span class="tag">${esc(s)}<span class="tag-x" onclick="removeStudent('${esc(s).replace(/'/g,"\\'")}')">×</span></span>`).join('');
+  document.getElementById('studentCount').textContent=students.length+' leerling'+(students.length===1?'':'en');
+}
+function loadDemo(){
+  students=['Emma','Lena','Sofie','Thomas','Noah','Olivia','Lucas','Mia','Finn','Sara'];
+  document.getElementById('klasInput').value='Klas 3A';
+  document.getElementById('jaarInput').value='2025-2026';
+  renderStudents();
+}
+
+/* ── STAP 2: VRAGEN ── */
+// ── Vaste vragensets per leerjaar ──
+const VRAGENSETS={
+  '1lj':[
+    {name:'Met wie speel jij graag?',      type:'pos'},
+    {name:'Met wie speel jij niet graag?', type:'neg'},
+  ],
+  '2lj':[
+    {name:'Met wie speel jij graag?',      type:'pos'},
+    {name:'Met wie speel jij niet graag?', type:'neg'},
+    {name:'Met wie werk jij graag?',       type:'pos'},
+    {name:'Met wie werk jij niet graag?',  type:'neg'},
+  ],
+  '3lj':[
+    {name:'Met wie speel jij graag?',      type:'pos'},
+    {name:'Met wie speel jij niet graag?', type:'neg'},
+    {name:'Met wie werk jij graag?',       type:'pos'},
+    {name:'Met wie werk jij niet graag?',  type:'neg'},
+  ],
+  '4lj':[
+    {name:'Met wie speel jij graag?',      type:'pos'},
+    {name:'Met wie speel jij niet graag?', type:'neg'},
+    {name:'Met wie werk jij graag?',       type:'pos'},
+    {name:'Met wie werk jij niet graag?',  type:'neg'},
+    {name:'Wie ervaar je als storend?',    type:'neg'},
+    {name:'Wie wordt uitgesloten?',        type:'neg'},
+  ],
+  '5lj':[
+    {name:'Met wie speel jij graag?',      type:'pos'},
+    {name:'Met wie speel jij niet graag?', type:'neg'},
+    {name:'Met wie werk jij graag?',       type:'pos'},
+    {name:'Met wie werk jij niet graag?',  type:'neg'},
+    {name:'Wie ervaar je als storend?',    type:'neg'},
+    {name:'Wie wordt uitgesloten?',        type:'neg'},
+  ],
+  '6lj':[
+    {name:'Met wie speel jij graag?',      type:'pos'},
+    {name:'Met wie speel jij niet graag?', type:'neg'},
+    {name:'Met wie werk jij graag?',       type:'pos'},
+    {name:'Met wie werk jij niet graag?',  type:'neg'},
+    {name:'Wie ervaar je als storend?',    type:'neg'},
+    {name:'Wie wordt uitgesloten?',        type:'neg'},
+  ],
+};
+
+let activeLeerjaar=null;
+
+function setLeerjaar(lj){
+  activeLeerjaar=lj;
+  // Vragen laden
+  questions=VRAGENSETS[lj].map(q=>({...q,cols:[]}));
+  // Knoppen visueel activeren
+  document.querySelectorAll('.lj-btn').forEach(b=>b.classList.remove('active'));
+  const ljLabel={'1lj':'1ste','2lj':'2de','3lj':'3de','4lj':'4de','5lj':'5de','6lj':'6de'};
+  document.querySelectorAll('.lj-btn').forEach(b=>{
+    if(b.querySelector('.lj-num').textContent.startsWith(ljLabel[lj]))b.classList.add('active');
+  });
+  // Sla leerjaar ook op in klas-invoerveld als hint
+  const klasInp=document.getElementById('klasInput');
+  if(klasInp&&!klasInp.value)klasInp.value=ljLabel[lj]+' leerjaar';
+  // Toon extra vragen-blok en render lijst
+  document.getElementById('customQuestionBlock').style.display='block';
+  renderQuestions();
+}
+
+function addQuestion(){
+  const inp=document.getElementById('qNameInput');
+  const n=inp.value.trim();
+  const t=document.getElementById('qTypeInput').value;
+  if(!n)return;
+  if(questions.find(q=>q.name===n)){alert('Er bestaat al een vraag met deze naam.');return;}
+  if(questions.length>=8){alert('Maximaal 8 vragen mogelijk.');return;}
+  questions.push({name:n,type:t,cols:[]});
+  inp.value='';inp.focus();
+  renderQuestions();
+}
+function removeQuestion(i){
+  questions.splice(i,1);
+  renderQuestions();
+}
+function renderQuestions(){
+  const el=document.getElementById('questionList');
+  if(questions.length===0){
+    el.innerHTML='<p style="font-size:13px;color:var(--text-muted);padding:8px 0">Kies eerst een leerjaar hierboven.</p>';
+    return;
+  }
+  // Toon leerjaar-badge
+  const ljLabels={'1lj':'1ste leerjaar','2lj':'2de leerjaar','3lj':'3de leerjaar',
+                  '4lj':'4de leerjaar','5lj':'5de leerjaar','6lj':'6de leerjaar'};
+  const hdr=activeLeerjaar
+    ?`<div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em">
+        Vragenset ${ljLabels[activeLeerjaar]||''} — ${questions.length} vragen
+      </div>` : '';
+  el.innerHTML=hdr+questions.map((q,i)=>`
+    <div class="q-item">
+      <span class="q-badge ${q.type}">${q.type==='pos'?'Positief':'Negatief'}</span>
+      <span style="font-size:14px;flex:1">${esc(q.name)}</span>
+      <button class="btn btn-xs btn-danger" onclick="removeQuestion(${i})" style="padding:3px 8px" title="Verwijderen">×</button>
+    </div>`).join('');
+}
+function loadDemoQuestions(){
+  setLeerjaar('4lj');
+}
+
+/* ── STAP 3: CSV ── */
+/* ── Robuuste CSV-parser: BOM, quoted fields, ; en , als separator ── */
+function parseCSVLine(line,sep){
+  var res=[],cur='',inQ=false;
+  for(var i=0;i<line.length;i++){
+    var ch=line[i];
+    if(ch==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
+    else if(ch===sep&&!inQ){res.push(cur.trim());cur='';}
+    else cur+=ch;
+  }
+  res.push(cur.trim());return res;
+}
+function cleanCell(s){
+  // Verwijder BOM, aanhalingstekens, non-breaking spaces en andere onzichtbare tekens
+  return String(s||'')
+    .replace(/^\uFEFF/,'')
+    .replace(/^[\u201C\u201D"']+|[\u201C\u201D"']+$/g,'')
+    .replace(/\u00A0/g,' ')  // non-breaking space → gewone spatie
+    .replace(/\u200B/g,'')   // zero-width space weg
+    .trim();
+}
+function normName(s){
+  return cleanCell(s).toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]/g,' ').replace(/\s+/g,' ').trim();
+}
+/* Splits een cel die meerdere namen bevat (gescheiden door ; of |) */
+function splitMultiValue(cell){
+  return cleanCell(cell)
+    .split(/[;|]/)
+    .map(function(v){return cleanCell(v);})
+    .filter(function(v){return v.length>0;});
+}
+
+function parseCSV(){
+  var raw=document.getElementById('csvInput').value.replace(/^\uFEFF/,'').trim();
+  if(!raw){alert('Plak eerst CSV-data.');return;}
+  var lines=raw.split(/\r?\n/).filter(function(l){return l.trim();});
+  if(lines.length<2){alert('De CSV heeft minstens twee rijen nodig.');return;}
+  // Detecteer separator van de CSV zelf (komma of puntkomma tussen kolommen)
+  // Tel buiten aanhalingstekens
+  var testLine=lines[0], nSemi=0, nComma=0, inQ=false;
+  for(var i=0;i<testLine.length;i++){
+    var ch=testLine[i];
+    if(ch==='"')inQ=!inQ;
+    else if(!inQ&&ch===';')nSemi++;
+    else if(!inQ&&ch===',')nComma++;
+  }
+  var sep=nSemi>=nComma?';':',';
+  csvHeaders=parseCSVLine(lines[0],sep).map(cleanCell);
+  csvRows=lines.slice(1).map(function(l){return parseCSVLine(l,sep).map(cleanCell);});
+
+  // Debug info
+  var dbg=document.getElementById('csvDebug');
+  if(dbg){
+    dbg.style.display='block';
+    // Detecteer of cellen meerdere waarden bevatten (multi-select formaat)
+    var sampleMulti=csvRows.slice(0,5).some(function(row){
+      return row.some(function(cell){return cell.includes(';');});
+    });
+    dbg.innerHTML='<strong>Gedetecteerd:</strong> kolom-separator = <code>'+sep+'</code> &nbsp;&middot;&nbsp; '
+      +csvHeaders.length+' kolommen &nbsp;&middot;&nbsp; '+csvRows.length+' rijen'
+      +(sampleMulti?' &nbsp;&middot;&nbsp; <span style="color:var(--green)">&#10003; Meerdere namen per cel herkend (puntkomma-formaat)</span>':'')
+      +'<br><strong>Kolommen:</strong> '+csvHeaders.map(function(h){return '<code>'+esc(h)+'</code>';}).join(', ');
+  }
+  buildMappingUI();
+  document.getElementById('mappingCard').style.display='block';
+  document.getElementById('mappingCard').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function buildMappingUI(){
+  var nameEl=document.getElementById('mapName');
+  nameEl.innerHTML=csvHeaders.map(function(h){
+    return '<option value="'+esc(h)+'">'+esc(h)+'</option>';
+  }).join('');
+  // Probeer automatisch de naam-kolom te vinden
+  var autoName=csvHeaders.find(function(h){
+    return /^(wie ben jij|naam|voornaam|name|leerling|student|firstname)/i.test(h.trim());
+  })||csvHeaders.find(function(h){
+    return /naam|name|leerling|student|voornaam|firstname|wie/i.test(h);
+  })||csvHeaders[0];
+  if(autoName)nameEl.value=autoName;
+
+  // Toon preview van eerste paar waarden per kolom
+  function colPreview(h){
+    var ci=csvHeaders.indexOf(h);
+    var vals=csvRows.slice(0,3).map(function(r){return cleanCell(r[ci]||'');}).filter(Boolean);
+    return vals.length?'<span style="color:var(--text-hint);font-size:11px"> bijv. '+vals.map(function(v){return '"'+esc(v.length>25?v.slice(0,25)+'…':v)+'"';}).join(', ')+'</span>':'';
+  }
+
+  var ui=document.getElementById('mappingUI');
+  ui.innerHTML=questions.map(function(q,qi){
+    var lq=normName(q.name);
+    var cols=csvHeaders.map(function(h){
+      var lh=normName(h);
+      var checked=lq.length>=3&&(lh.includes(lq)||lq.split(' ').some(function(w){return w.length>=3&&lh.includes(w);}));
+      return '<label style="display:flex;flex-direction:column;gap:1px"><span style="display:flex;align-items:center;gap:6px"><input type="checkbox" data-qi="'+qi+'" value="'+esc(h)+'"'+(checked?' checked':'')+'> <strong style="font-size:13px">'+esc(h)+'</strong></span>'+colPreview(h)+'</label>';
+    }).join('');
+    return '<div class="mapping-block">'
+      +'<div class="mapping-block-head"><span class="q-badge '+q.type+'">'+(q.type==='pos'?'Pos':'Neg')+'</span><span>'+esc(q.name)+'</span>'
+      +'<span style="font-size:11px;color:var(--text-hint);margin-left:auto">Vink de kolom(men) aan voor deze vraag</span></div>'
+      +'<div class="mapping-block-body"><div class="cb-grid" style="grid-template-columns:1fr">'+cols+'</div></div></div>';
+  }).join('');
+}
+
+function applyMapping(){
+  var nameIdx=csvHeaders.indexOf(document.getElementById('mapName').value);
+  if(nameIdx<0){alert('Selecteer een geldige naam-kolom.');return;}
+  votes={};
+  var totPos=0,totNeg=0,onbekend=[];
+  questions.forEach(function(q,qi){
+    var cols=[...document.querySelectorAll('input[data-qi="'+qi+'"]:checked')].map(function(b){return b.value;});
+    q.cols=cols;
+    votes[q.name]={pos:[],neg:[],type:q.type};
+    if(cols.length===0)return;
+    csvRows.forEach(function(row){
+      var from=cleanCell(row[nameIdx]);
+      if(!from)return;
+      cols.forEach(function(col){
+        var ci=csvHeaders.indexOf(col);
+        if(ci<0)return;
+        var cell=cleanCell(row[ci]||'');
+        if(!cell)return;
+        // Splits meerdere namen in één cel (puntkomma-formaat van Microsoft Forms)
+        var targets=splitMultiValue(cell);
+        if(targets.length===0)targets=[cell]; // fallback: cel als geheel
+        targets.forEach(function(to){
+          to=cleanCell(to);
+          if(!to)return;
+          if(normName(to)===normName(from))return; // zichzelf overslaan
+          if(q.type==='pos'){votes[q.name].pos.push({from:from,to:to});totPos++;}
+          else{votes[q.name].neg.push({from:from,to:to});totNeg++;}
+          if(students.length>0&&!students.some(function(s){return normName(s)===normName(to);})){
+            if(!onbekend.includes(to))onbekend.push(to);
+          }
+        });
+      });
+    });
+  });
+  if(!students.length){
+    var all=new Set(Object.values(votes).flatMap(function(v){return [...v.pos,...v.neg].map(function(x){return x.from;});}));
+    students=[...all];
+  }
+  mappingApplied=true;
+  var statusEl=document.getElementById('mappingStatus');
+  if(totPos===0&&totNeg===0){
+    statusEl.style.color='var(--red)';
+    statusEl.innerHTML='&#9888; Geen keuzes gevonden. Zijn de juiste kolommen aangevinkt? Kijk ook of de naam-kolom correct is ingesteld.';
+  } else {
+    statusEl.style.color='var(--green)';
+    var msg='&#10003; '+totPos+' positieve en '+totNeg+' negatieve keuzes geladen';
+    if(onbekend.length>0){
+      msg+='<br><span style="color:var(--amber-border);font-size:12px">&#9888; '+onbekend.length
+        +' naam/namen komen niet voor in de leerlingenlijst: '
+        +onbekend.slice(0,6).map(esc).join(', ')+(onbekend.length>6?'&hellip;':'')
+        +'<br>Tip: controleer of de namen in de leerlingenlijst exact overeenkomen met de namen in het formulier.</span>';
+    }
+    statusEl.innerHTML=msg;
+  }
+}
+
+function loadDemoData(){
+  if(questions.length===0)setLeerjaar('4lj');
+  if(students.length===0)loadDemo();
+  // Demo in Microsoft Forms puntkomma-formaat (meerdere namen per cel)
+  document.getElementById('csvInput').value=
+"ID,Wie ben jij?,Met welke kinderen kun je heel goed samenwerken?,Met welke kinderen kun je helemaal niet samenwerken?,Welke kinderen in deze groep vind jij het aardigst?,Welke kinderen in deze groep vind jij het minst aardig?\n"
++"1,Emma,Lena;Sofie;,Thomas;,Mia;Olivia;,Noah;\n"
++"2,Lena,Emma;Olivia;,Noah;,Emma;Sara;,Thomas;Finn;\n"
++"3,Sofie,Emma;Mia;,Thomas;,Emma;Olivia;,Noah;Finn;\n"
++"4,Thomas,Noah;Lucas;,Emma;,Finn;Lucas;,Lena;Sara;\n"
++"5,Noah,Thomas;Lucas;,Lena;,Thomas;Finn;,Emma;\n"
++"6,Olivia,Lena;Emma;,Finn;,Lena;Sofie;,Thomas;\n"
++"7,Lucas,Noah;Thomas;,Sara;,Noah;Thomas;,Finn;\n"
++"8,Mia,Sofie;Emma;,Finn;,Emma;Sofie;,Noah;\n"
++"9,Finn,Lucas;Noah;,Thomas;,Noah;Thomas;,Lena;\n"
++"10,Sara,Emma;Lena;,Finn;,Lena;Emma;,Thomas;";
+  // Stel vragen in die overeenkomen met de demo-kolommen
+  questions=[
+    {name:'Samenwerken',type:'pos',cols:[]},
+    {name:'Niet samenwerken',type:'neg',cols:[]},
+    {name:'Aardigst',type:'pos',cols:[]},
+    {name:'Minst aardig',type:'neg',cols:[]}
+  ];
+  renderQuestions();
+  parseCSV();
+  setTimeout(applyMapping,200);
+}
+
+/* ── STAP 4: RESULTATEN ── */
+function getPV(qn){if(qn==='__all__')return Object.values(votes).flatMap(v=>v.pos);return votes[qn]?votes[qn].pos:[];}
+function getNV(qn){if(qn==='__all__')return Object.values(votes).flatMap(v=>v.neg);return votes[qn]?votes[qn].neg:[];}
+function isMut(a,b,qn){const pv=getPV(qn);const na=normName(a),nb=normName(b);return pv.some(v=>normName(v.from)===na&&normName(v.to)===nb)&&pv.some(v=>normName(v.from)===nb&&normName(v.to)===na);}
+
+function renderResults(){
+  const klas=document.getElementById('klasInput').value||'Klas';
+  const jaar=document.getElementById('jaarInput').value||'';
+  document.getElementById('resultKlas').textContent=klas;
+  document.getElementById('resultMeta').textContent=[jaar,new Date().toLocaleDateString('nl-BE')].filter(Boolean).join(' · ');
+  document.getElementById('klasMeta').textContent=klas+(jaar?' · '+jaar:'');
+  buildQTabs();
+  renderStats();
+  renderMatrix();
+  renderNetwork();
+  renderAnalysis();
+  renderCompare();
+  renderAttention();
+}
+
+function buildQTabs(){
+  const el=document.getElementById('qTabs');
+  const tabs=[{id:'__all__',label:'Totaal',cls:''}];
+  questions.forEach(q=>tabs.push({id:q.name,label:q.name,cls:q.type+'-tab'}));
+  if(questions.length>1)tabs.push({id:'__compare__',label:'Vergelijking',cls:''});
+  el.innerHTML=tabs.map(t=>`<button class="q-tab ${t.cls}${t.id===activeQ?' active':''}" onclick="switchQ('${t.id.replace(/'/g,"\\'")}','${t.cls}')">${esc(t.label)}</button>`).join('');
+}
+function switchQ(qid,cls){
+  activeQ=qid;
+  const isCompare=qid==='__compare__';
+  document.getElementById('mainView').style.display=isCompare?'none':'block';
+  document.getElementById('compareView').style.display=isCompare?'block':'none';
+  document.querySelectorAll('.q-tab').forEach(t=>{
+    t.classList.remove('active');
+    if(t.textContent.trim()===(qid==='__all__'?'Totaal':qid==='__compare__'?'Vergelijking':qid))t.classList.add('active');
+  });
+  if(!isCompare){selectedNode=null;renderMatrix();renderNetwork();renderAnalysis();}
+  renderAttention();
+}
+
+function renderStats(){
+  const pv=getPV('__all__'),nv=getNV('__all__');
+  let mutCount=0;
+  students.forEach((a,i)=>students.slice(i+1).forEach(b=>{if(isMut(a,b,'__all__'))mutCount++;}));
+  const isolated=students.filter(s=>!pv.some(v=>v.to===s)).length;
+  document.getElementById('statsGrid').innerHTML=`
+    <div class="stat-card"><div class="num">${students.length}</div><div class="lbl">Leerlingen</div></div>
+    <div class="stat-card"><div class="num">${questions.length}</div><div class="lbl">Vragen</div></div>
+    <div class="stat-card"><div class="num">${pv.length}</div><div class="lbl">Positieve keuzes</div></div>
+    <div class="stat-card"><div class="num">${nv.length}</div><div class="lbl">Negatieve keuzes</div></div>
+    <div class="stat-card"><div class="num">${mutCount}</div><div class="lbl">Wederzijds positief</div></div>
+    <div class="stat-card"><div class="num">${isolated}</div><div class="lbl">Zonder positieve keuze</div></div>`;
+}
+
+function renderMatrix(){
+  const qn=activeQ;
+  document.getElementById('matrixTitle').textContent='Sociomatrix'+(qn==='__all__'?' — alle vragen':' — '+qn);
+  const pv=getPV(qn),nv=getNV(qn);
+  let html=`<table class="mx"><thead><tr><th class="rh">Van / Naar</th>`;
+  students.forEach(s=>{html+=`<th>${esc(trunc(s,6))}</th>`;});
+  html+=`</tr></thead><tbody>`;
+  students.forEach(from=>{
+    html+=`<tr><th class="rh">${esc(from)}</th>`;
+    students.forEach(to=>{
+      if(from===to){html+=`<td class="self">—</td>`;return;}
+      const pos=pv.some(v=>v.from===from&&v.to===to);
+      const neg=nv.some(v=>v.from===from&&v.to===to);
+      const mut=pos&&isMut(from,to,qn);
+      if(mut)html+=`<td class="cm" title="Wederzijds positief">↔</td>`;
+      else if(pos)html+=`<td class="cp">+</td>`;
+      else if(neg)html+=`<td class="cn">−</td>`;
+      else html+=`<td></td>`;
+    });
+    html+=`</tr>`;
+  });
+  document.getElementById('matrixWrap').innerHTML=html+`</tbody></table>`;
+}
+
+let selectedNode=null; // globale selectie-staat voor het diagram
+
+function renderNetwork(keepSelection){
+  if(!keepSelection)selectedNode=null;
+  const qn=activeQ;
+  document.getElementById('networkTitle').textContent='Relatiediagram'+(qn==='__all__'?' — alle vragen':' — '+qn);
+  document.getElementById('networkSub').textContent=selectedNode
+    ?'Klik op een andere naam om te wisselen · klik op dezelfde naam of op de achtergrond om alles te tonen'
+    :'Klik op een naam om alleen de keuzes van die leerling te tonen';
+  const svg=document.getElementById('network');
+  const W=840,H=460,cx=W/2,cy=H/2,R=185;
+  const n=students.length;
+  const spos=students.map((_,i)=>{
+    const a=(2*Math.PI*i/n)-Math.PI/2;
+    return{x:Math.round(cx+R*Math.cos(a)),y:Math.round(cy+R*Math.sin(a))};
+  });
+  const pv=getPV(qn),nv=getNV(qn);
+  const getR=s=>14+Math.min(pv.filter(v=>v.to===s).length*2,12);
+
+  // Bepaal welke edges en nodes zichtbaar/dim zijn
+  const sel=selectedNode;
+  function edgeVisible(from,to){
+    if(!sel)return true;
+    return normName(from)===normName(sel)||normName(to)===normName(sel);
+  }
+  function nodeActive(s){
+    if(!sel)return true;
+    if(normName(s)===normName(sel))return true;
+    // actief als er een relatie is met de geselecteerde node
+    return pv.some(v=>(normName(v.from)===normName(sel)&&normName(v.to)===normName(s))||
+                       (normName(v.from)===normName(s)&&normName(v.to)===normName(sel)))||
+           nv.some(v=>(normName(v.from)===normName(sel)&&normName(v.to)===normName(s))||
+                       (normName(v.from)===normName(s)&&normName(v.to)===normName(sel)));
+  }
+
+  let out=`<defs>
+    <marker id="aP" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="#1D9E75"/></marker>
+    <marker id="aN" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="#E24B4A"/></marker>
+    <marker id="aM" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="#378ADD"/></marker>
+    <marker id="aPd" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="#1D9E7540"/></marker>
+    <marker id="aNd" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="#E24B4A40"/></marker>
+    <marker id="aMd" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="#378ADD40"/></marker>
+  </defs>`;
+
+  // Klik op achtergrond → deselecteer
+  out+=`<rect width="${W}" height="${H}" fill="transparent" onclick="selectNode(null)" style="cursor:default"/>`;
+
+  // Edges eerst (onder nodes)
+  pv.forEach(v=>{
+    const fi=students.findIndex(s=>normName(s)===normName(v.from));
+    const ti=students.findIndex(s=>normName(s)===normName(v.to));
+    if(fi<0||ti<0)return;
+    const vis=edgeVisible(v.from,v.to);
+    const mut=isMut(v.from,v.to,qn);
+    const col=mut?(vis?'#378ADD':'#378ADD28'):(vis?'#1D9E75':'#1D9E7528');
+    const mid=mut?(vis?'aM':'aMd'):(vis?'aP':'aPd');
+    const sw=vis?2:1;
+    const op=vis?1:0.15;
+    const fx=spos[fi].x,fy=spos[fi].y,tx=spos[ti].x,ty=spos[ti].y;
+    const dx=tx-fx,dy=ty-fy,d=Math.sqrt(dx*dx+dy*dy)||1;
+    const r1=getR(v.from),r2=getR(v.to);
+    out+=`<line x1="${Math.round(fx+r1*dx/d)}" y1="${Math.round(fy+r1*dy/d)}" x2="${Math.round(tx-r2*dx/d)}" y2="${Math.round(ty-r2*dy/d)}" stroke="${col}" stroke-width="${sw}" marker-end="url(#${mid})" opacity="${op}"/>`;
+  });
+  nv.forEach(v=>{
+    const fi=students.findIndex(s=>normName(s)===normName(v.from));
+    const ti=students.findIndex(s=>normName(s)===normName(v.to));
+    if(fi<0||ti<0)return;
+    const vis=edgeVisible(v.from,v.to);
+    const col=vis?'#E24B4A':'#E24B4A28';
+    const mid=vis?'aN':'aNd';
+    const sw=vis?2:1;
+    const op=vis?1:0.15;
+    const fx=spos[fi].x,fy=spos[fi].y,tx=spos[ti].x,ty=spos[ti].y;
+    const dx=tx-fx,dy=ty-fy,d=Math.sqrt(dx*dx+dy*dy)||1;
+    const r1=getR(v.from),r2=getR(v.to);
+    out+=`<line x1="${Math.round(fx+r1*dx/d)}" y1="${Math.round(fy+r1*dy/d)}" x2="${Math.round(tx-r2*dx/d)}" y2="${Math.round(ty-r2*dy/d)}" stroke="${col}" stroke-width="${sw}" stroke-dasharray="5,3" marker-end="url(#${mid})" opacity="${op}"/>`;
+  });
+
+  // Nodes bovenop
+  students.forEach((s,i)=>{
+    const pr=pv.filter(v=>normName(v.to)===normName(s)).length;
+    const nr=nv.filter(v=>normName(v.to)===normName(s)).length;
+    const r=getR(s);
+    const isSel=sel&&normName(s)===normName(sel);
+    const active=nodeActive(s);
+    const fill=pr>nr?'#1D9E75':nr>pr?'#E24B4A':'#378ADD';
+    const fillDim='#B0ADA8';
+    const px=spos[i].x,py=spos[i].y;
+    const isL=px<cx-30,isR=px>cx+30;
+    const lx=isL?px-(r+7):isR?px+(r+7):px;
+    const anchor=isL?'end':isR?'start':'middle';
+    const ly=isL||isR?py+4:py<cy?py-(r+8):py+(r+17);
+    const nodeColor=active?(isSel?fill:fill):fillDim;
+    const textCol=active?'#1c1b18':'#B0ADA8';
+    const strokeW=isSel?3.5:2;
+    const strokeCol=isSel?'#FFD700':'white';
+    const nodeOp=active?1:0.35;
+    const sname=s.replace(/'/g,"\\'");
+    out+=`<g onclick="selectNode('${sname}')" style="cursor:pointer">`;
+    out+=`<circle cx="${px}" cy="${py}" r="${r}" fill="${nodeColor}" fill-opacity="${nodeOp}" stroke="${strokeCol}" stroke-width="${strokeW}"/>`;
+    out+=`<text x="${px}" y="${py+5}" text-anchor="middle" font-size="11" fill="white" fill-opacity="${nodeOp}" font-weight="700" font-family="Segoe UI,sans-serif">${esc(s.charAt(0))}</text>`;
+    out+=`<text x="${lx}" y="${ly}" text-anchor="${anchor}" font-size="${isSel?13:12}" fill="${textCol}" font-weight="${isSel?700:400}" font-family="Segoe UI,sans-serif">${esc(trunc(s,10))}</text>`;
+    out+=`</g>`;
+  });
+
+  // Info-paneel rechts als iemand geselecteerd is
+  if(sel){
+    const pvOut=pv.filter(v=>normName(v.from)===normName(sel));
+    const nvOut=nv.filter(v=>normName(v.from)===normName(sel));
+    const pvIn=pv.filter(v=>normName(v.to)===normName(sel));
+    const nvIn=nv.filter(v=>normName(v.to)===normName(sel));
+    const px=10,py=10,pw=160,lh=16;
+    const rows=['Geselecteerd: '+sel,'',
+      'Kiest positief ('+pvOut.length+'):',
+      ...pvOut.map(v=>'  + '+v.to),
+      pvOut.length===0?'  —':'',
+      'Kiest negatief ('+nvOut.length+'):',
+      ...nvOut.map(v=>'  \u2212 '+v.to),
+      nvOut.length===0?'  —':'',
+      'Ontvangen pos. ('+pvIn.length+'):',
+      ...pvIn.map(v=>'  + '+v.from),
+      pvIn.length===0?'  —':'',
+      'Ontvangen neg. ('+nvIn.length+'):',
+      ...nvIn.map(v=>'  \u2212 '+v.from),
+      nvIn.length===0?'  —':'',
+    ].filter(r=>r!==undefined);
+    const ph=rows.length*lh+20;
+    out+=`<rect x="${px}" y="${py}" width="${pw}" height="${ph}" rx="6" fill="white" fill-opacity="0.93" stroke="#e0ddd6" stroke-width="1"/>`;
+    rows.forEach((row,ri)=>{
+      const isHeader=ri===0||row.endsWith(':');
+      const isPos=row.startsWith('  +');
+      const isNeg=row.startsWith('  \u2212');
+      const col=ri===0?'#0C447C':isPos?'#1D9E75':isNeg?'#E24B4A':isHeader?'#6b6860':'#1c1b18';
+      const fw=isHeader&&ri===0?700:isHeader?600:400;
+      const fs=ri===0?12:11;
+      out+=`<text x="${px+10}" y="${py+14+ri*lh}" font-size="${fs}" fill="${col}" font-weight="${fw}" font-family="Segoe UI,sans-serif">${esc(row)}</text>`;
+    });
+  }
+
+  svg.innerHTML=out;
+}
+
+function selectNode(name){
+  if(name===null||selectedNode===name){
+    selectedNode=null;
+  } else {
+    selectedNode=name;
+  }
+  renderNetwork(true);
+}
+
+function renderAnalysis(){
+  const qn=activeQ;
+  document.getElementById('analysisTitle').textContent='Analyse per leerling'+(qn==='__all__'?' — alle vragen':' — '+qn);
+  const pv=getPV(qn),nv=getNV(qn);
+  let html=`<table class="analysis-table"><thead><tr>
+    <th>Leerling</th><th>Pos. ontvangen</th><th>Neg. ontvangen</th><th>Wederzijds positief</th><th>Status</th><th>Positief gekozen door</th>
+  </tr></thead><tbody>`;
+  students.forEach(s=>{
+    const pr=pv.filter(v=>v.to===s),nr=nv.filter(v=>v.to===s);
+    const mut=students.filter(o=>o!==s&&isMut(s,o,qn)).length;
+    let badge='badge-avg',label='Gemiddeld';
+    if(pr.length>=3&&nr.length===0){badge='badge-pop';label='Populair';}
+    else if(nr.length>=2&&pr.length===0){badge='badge-risk';label='Aandacht nodig';}
+    else if(pr.length===0&&nr.length===0){badge='badge-inv';label='Onzichtbaar';}
+    html+=`<tr>
+      <td style="font-weight:600">${esc(s)}</td>
+      <td>${pr.length}</td><td>${nr.length}</td><td>${mut}</td>
+      <td><span class="badge ${badge}">${label}</span></td>
+      <td style="font-size:12px;color:var(--text-muted)">${pr.map(v=>esc(v.from)).join(', ')||'—'}</td>
+    </tr>`;
+  });
+  document.getElementById('analysisWrap').innerHTML=html+`</tbody></table>`;
+}
+
+function renderCompare(){
+  if(questions.length<=1){document.getElementById('compareView').style.display='none';return;}
+  const maxScore=Math.max(1,...students.flatMap(s=>questions.map(q=>getPV(q.name).filter(v=>v.to===s).length+getNV(q.name).filter(v=>v.to===s).length)));
+  let html=`<table class="compare-table"><thead><tr><th>Leerling</th>`;
+  questions.forEach(q=>{html+=`<th class="center">${esc(q.name)}<br><span style="font-weight:400;color:var(--text-hint)">${q.type==='pos'?'pos':'neg'}</span></th>`;});
+  html+=`</tr></thead><tbody>`;
+  students.forEach(s=>{
+    html+=`<tr><td style="font-weight:600">${esc(s)}</td>`;
+    questions.forEach(q=>{
+      const cnt=q.type==='pos'?getPV(q.name).filter(v=>v.to===s).length:getNV(q.name).filter(v=>v.to===s).length;
+      const pct=Math.round((cnt/maxScore)*100);
+      const col=q.type==='pos'?'#1D9E75':'#E24B4A';
+      html+=`<td class="center"><div style="font-weight:600;font-size:14px">${cnt}</div>
+        <div class="bar-wrap"><div class="bar-fill" style="background:${col};width:${pct}%"></div></div></td>`;
+    });
+    html+=`</tr>`;
+  });
+  document.getElementById('compareWrap').innerHTML=html+`</tbody></table>`;
+}
+
+function renderAttention(){
+  const qn=activeQ==='__compare__'?'__all__':activeQ;
+  const pv=getPV(qn),nv=getNV(qn);
+  const suffix=qn==='__all__'?'':` (vraag: "${qn}")`;
+  const items=[];
+  students.forEach(s=>{
+    const pr=pv.filter(v=>v.to===s).length,nr=nv.filter(v=>v.to===s).length;
+    if(nr>=2&&pr===0)items.push({cls:'at-box',msg:`<strong>${esc(s)}</strong> ontvangt ${nr} negatieve keuzes en geen positieve${suffix}. Directe opvolging aangeraden.`});
+    else if(pr===0&&nr===0&&pv.length>0)items.push({cls:'aw-box',msg:`<strong>${esc(s)}</strong> wordt door niemand gekozen${suffix}. Mogelijk sociaal geïsoleerd.`});
+    else if(nr>=2)items.push({cls:'aw-box',msg:`<strong>${esc(s)}</strong> ontvangt ${nr} negatieve keuzes${suffix}. Opvolging aangeraden.`});
+  });
+  document.getElementById('attentionWrap').innerHTML=items.length
+    ?items.map(it=>`<div class="${it.cls}">${it.msg}</div>`).join('')
+    :`<p style="font-size:13px;color:var(--text-muted)">Geen directe aandachtspunten gevonden${suffix?suffix:''}.</p>`;
+}
+
+function copyResultsText(){
+  const qn=activeQ==='__compare__'?'__all__':activeQ;
+  const pv=getPV(qn),nv=getNV(qn);
+  const rows=[['Leerling','Pos. ontvangen','Neg. ontvangen','Wederzijds positief','Status']];
+  students.forEach(s=>{
+    const pr=pv.filter(v=>v.to===s).length,nr=nv.filter(v=>v.to===s).length;
+    const mut=students.filter(o=>o!==s&&isMut(s,o,qn)).length;
+    let label='Gemiddeld';
+    if(pr>=3&&nr===0)label='Populair';
+    else if(nr>=2&&pr===0)label='Aandacht nodig';
+    else if(pr===0&&nr===0)label='Onzichtbaar';
+    rows.push([s,pr,nr,mut,label]);
+  });
+  navigator.clipboard.writeText(rows.map(r=>r.join('\t')).join('\n'))
+    .then(()=>alert('Gekopieerd! Plak in Excel met Ctrl+V.'))
+    .catch(()=>alert('Kopiëren mislukt. Probeer handmatig.'));
+}
+
+/* ── HULPFUNCTIES ── */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function trunc(s,n){return s.length>n?s.slice(0,n)+'…':s;}
+
+// ═══════════════════════════════════════════
+// MSAL AUTHENTICATIE
+// ═══════════════════════════════════════════
+const _msalCfg = {
+  auth: {
+    clientId:    '629b0398-c18e-4455-a474-fe5fde0425e6',
+    authority:   'https://login.microsoftonline.com/655d15e1-e5fc-4868-8462-8463dc0ff014',
+    redirectUri: 'https://lon-ka.github.io/LON-Sociogram/',
+  },
+  cache: { cacheLocation: 'localStorage' }
+};
+const _msalApp = new msal.PublicClientApplication(_msalCfg);
+let _msalToken = null;
+let _msalUser  = null;
+
+async function boot() {
+  try {
+    await _msalApp.initialize();
+    await _msalApp.handleRedirectPromise();
+
+    // Via portaal
+    if (window._portalToken) {
+      _msalToken = window._portalToken;
+      _msalUser  = { username: window._portalEmail || '', name: window._portalEmail || '' };
+      window._appBooted = true;
+      if (window.self !== window.top) document.body.classList.add('in-portal');
+      document.getElementById('auth-overlay').style.display = 'none';
+      showApp();
+      return;
+    }
+
+    // Eigen sessie
+    const accs = _msalApp.getAllAccounts();
+    if (accs.length) {
+      try {
+        const r = await _msalApp.acquireTokenSilent({ scopes: ['User.Read'], account: accs[0] });
+        _msalToken = r.accessToken;
+        _msalUser  = accs[0];
+        window._appBooted = true;
+        document.getElementById('auth-overlay').style.display = 'none';
+        showApp();
+        return;
+      } catch(e) {}
+    }
+
+    // In iframe zonder token — wacht
+    if (window.self !== window.top) {
+      if (!window._portalToken) await new Promise(r => setTimeout(r, 2000));
+      if (window._portalToken) { boot(); return; }
+      showAuthError('Geen sessie gevonden. Meld aan via het MijnDigiLoket portaal.');
+      return;
+    }
+
+    // Aanmeldscherm tonen
+    document.getElementById('auth-overlay').style.display = 'flex';
+  } catch(e) {
+    showAuthError('Initialisatie mislukt: ' + e.message);
+  }
+}
+
+async function doLogin() {
+  try {
+    const r = await _msalApp.loginPopup({ scopes: ['User.Read'] });
+    _msalToken = r.accessToken;
+    _msalUser  = r.account;
+    window._appBooted = true;
+    document.getElementById('auth-overlay').style.display = 'none';
+    showApp();
+  } catch(e) {
+    showAuthError(e.message);
+  }
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-err');
+  if (el) { el.textContent = msg; el.style.display = 'block'; }
+  document.getElementById('auth-overlay').style.display = 'flex';
+}
+
+function showApp() {
+  // Toon gebruikersnaam in header indien aanwezig
+  const userEl = document.getElementById('user-display');
+  if (userEl && _msalUser) {
+    userEl.textContent = _msalUser.name || _msalUser.username || '';
+    userEl.style.display = 'inline';
+  }
+}
+
+// Start
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() { boot().catch(console.error); });
+} else {
+  boot().catch(console.error);
+}
+
+</script>
+</body>
+</html>
