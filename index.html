@@ -238,6 +238,39 @@ svg.network{width:100%;border:1px solid var(--border);border-radius:var(--radius
 .help-step-txt{font-size:13px;color:#444;line-height:1.6}
 .help-footer{padding:.75rem 1.25rem;border-top:1px solid #E8E5DC;font-size:11px;color:#AAA;flex-shrink:0;text-align:center}
 </style>
+<script>
+// Verplicht gebruik via MijnDigiLoket portaal
+if (window.self === window.top) {
+    document.addEventListener('DOMContentLoaded', function() {
+        document.body.innerHTML = `
+            <div style="display:flex; flex-direction:column; align-items:center;
+                        justify-content:center; height:100vh; font-family:'Segoe UI',sans-serif;
+                        background:#F5F7FA; text-align:center; padding:20px;">
+                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" style="margin-bottom:24px;">
+                    <rect width="64" height="64" rx="16" fill="#0D1B2A"/>
+                    <rect x="12" y="12" width="16" height="16" rx="4" fill="#1A6BB5"/>
+                    <rect x="36" y="12" width="16" height="16" rx="4" fill="#1F4E79"/>
+                    <rect x="12" y="36" width="16" height="16" rx="4" fill="#C05A1A"/>
+                    <rect x="36" y="36" width="16" height="16" rx="4" fill="#6B7A8D"/>
+                </svg>
+                <h2 style="margin:0 0 8px; font-size:1.4rem; color:#1C2B3A;">
+                    Toegang via portaal vereist
+                </h2>
+                <p style="margin:0 0 28px; color:#6B7A8D; max-width:360px; line-height:1.5;">
+                    Deze applicatie is enkel beschikbaar via het MijnDigiLoket portaal.
+                </p>
+                <a href="https://lon-ka.github.io/LON-portaal/"
+                   style="display:inline-flex; align-items:center; gap:10px;
+                          padding:14px 28px; background:#0D1B2A; color:#fff;
+                          text-decoration:none; border-radius:10px; font-weight:600;
+                          font-size:.95rem;">
+                    Naar MijnDigiLoket
+                </a>
+            </div>`;
+    });
+}
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@3.28.0/lib/msal-browser.min.js"></script>
 <script>
 window._portalToken = null;
@@ -286,9 +319,11 @@ window.addEventListener('message', function(event) {
   </div>
   <div class="header-right" style="display:flex;align-items:center;gap:8px"><button onclick="openHelp()" title="Help" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:8px;color:white;padding:6px 12px;cursor:pointer;font-size:13px;font-family:inherit;font-weight:600">&#63; Help</button>
     <span id="klasMeta"></span>
-    <button class="btn btn-xs btn-ghost" onclick="window.print()" style="padding:4px 10px">Afdrukken</button>
   </div>
-  <div style="position:absolute;top:12px;right:16px;font-size:11px;color:#6b6860"><span id="user-display"></span></div>
+  <div style="display:flex;align-items:center;gap:10px;position:absolute;top:10px;right:16px">
+    <button class="btn btn-xs btn-ghost" onclick="window.print()" style="padding:4px 10px">Afdrukken</button>
+    <span style="font-size:11px;color:#6b6860"><span id="user-display"></span></span>
+  </div>
 </header>
 
 <main>
