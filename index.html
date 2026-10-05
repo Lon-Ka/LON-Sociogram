@@ -742,11 +742,27 @@ function buildMappingUI(){
   }
 
   var ui=document.getElementById('mappingUI');
+  // Automatische koppeling: eerst exacte titel, anders inhoudswoorden (zonder naamkolom,
+  // en "niet/minst"-vragen enkel met "niet/minst"-kolommen).
+  var STOP=['met','wie','jij','je','kun','welke','kinderen','deze','groep','het','een','de','in','vind','ben','kan','heel','goed','helemaal','niet','minst'];
+  var isNeg=function(t){return /\b(niet|minst|geen)\b/.test(t);};
+  var naamKol=nameEl.value;
+  function koppelt(q,h){
+    if(h===naamKol)return false;
+    var lq=normName(q.name),lh=normName(h);
+    if(csvHeaders.some(function(x){return normName(x)===lq;}))return lh===lq;
+    if(isNeg(lq)!==isNeg(lh))return false;
+    var w=lq.split(' ').filter(function(x){return x.length>=3&&STOP.indexOf(x)<0;});
+    if(!w.length)return false;
+    var hw=lh.split(' ');
+    var n=w.filter(function(x){return hw.indexOf(x)>=0;}).length;
+    return n>=Math.max(1,Math.ceil(w.length*0.6));
+  }
   ui.innerHTML=questions.map(function(q,qi){
     var lq=normName(q.name);
     var cols=csvHeaders.map(function(h){
       var lh=normName(h);
-      var checked=lq.length>=3&&(lh.includes(lq)||lq.split(' ').some(function(w){return w.length>=3&&lh.includes(w);}));
+      var checked=koppelt(q,h);
       return '<label style="display:flex;flex-direction:column;gap:1px"><span style="display:flex;align-items:center;gap:6px"><input type="checkbox" data-qi="'+qi+'" value="'+esc(h)+'"'+(checked?' checked':'')+'> <strong style="font-size:13px">'+esc(h)+'</strong></span>'+colPreview(h)+'</label>';
     }).join('');
     return '<div class="mapping-block">'
@@ -1293,17 +1309,18 @@ window.addEventListener('message', function(event) {
       <p>Het Sociogram werkt met de standaard CSV-export van Microsoft Forms.</p>
       <h4>CSV exporteren uit Forms</h4>
       <div class="help-step"><div class="help-step-nr">1</div><div class="help-step-txt">Open de Forms-vragenlijst in Microsoft 365</div></div>
-      <div class="help-step"><div class="help-step-nr">2</div><div class="help-step-txt">Ga naar <strong>Reacties</strong> → <strong>Openen in Excel</strong></div></div>
-      <div class="help-step"><div class="help-step-nr">3</div><div class="help-step-txt">Sla op als CSV (UTF-8)</div></div>
-      <div class="help-step"><div class="help-step-nr">4</div><div class="help-step-txt">Sleep de CSV naar het importvenster of klik op <strong>Bestand kiezen</strong></div></div>
+      <div class="help-step"><div class="help-step-nr">2</div><div class="help-step-txt">Ga naar <strong>Antwoorden</strong> → <strong>Openen in Excel</strong></div></div>
+      <div class="help-step"><div class="help-step-nr">3</div><div class="help-step-txt">Sla op als CSV (UTF-8), open het bestand in Kladblok en kopieer alles</div></div>
+      <div class="help-step"><div class="help-step-nr">4</div><div class="help-step-txt">Plak de inhoud bij <strong>CSV-inhoud plakken</strong>, klik op <strong>CSV verwerken</strong> en controleer de koppeling per vraag</div></div>
       <div class="help-tip"><strong>Kolomnamen:</strong> de vragenlijst moet de standaard LONKA-vragen bevatten. Gebruik de Forms-sjabloon die de school heeft aangemaakt.</div></div><div class="help-section" id="help-diagram">
       <h3>&#128203; Het diagram lezen</h3>
       <p>Het netwerkdiagram toont leerlingen als cirkels (nodes) verbonden door pijlen (keuzes).</p>
       <h4>Wat betekenen de kleuren?</h4>
       <ul>
-        <li><strong>Groen:</strong> positieve keuze (ik speel graag met ...)</li>
-        <li><strong>Rood:</strong> negatieve keuze (ik speel liever niet met ...)</li>
-        <li><strong>Dik/dun:</strong> wederzijdse of éénzijdige keuze</li>
+        <li><strong>Groene pijl:</strong> positieve keuze (ik speel graag met ...)</li>
+        <li><strong>Rode stippellijn:</strong> negatieve keuze (ik speel liever niet met ...)</li>
+        <li><strong>Blauwe lijn:</strong> wederzijdse positieve keuze</li>
+        <li><strong>Grootte van de cirkel:</strong> hoe vaak een leerling positief gekozen wordt</li>
       </ul>
       <h4>Interactie</h4>
       <ul>
@@ -1313,13 +1330,13 @@ window.addEventListener('message', function(event) {
       </ul></div><div class="help-section" id="help-analyse">
       <h3>&#128269; Analyse en export</h3>
       <h4>Sociometrische status</h4>
-      <p>Het analysetabblad toont per leerling de sociometrische status: populair, gemiddeld, verworpen, genegeerd of controversieel.</p>
+      <p>De analyse toont per leerling een status: <strong>Populair</strong> (minstens 3 positieve en geen negatieve keuzes), <strong>Aandacht nodig</strong> (minstens 2 negatieve en geen positieve), <strong>Onzichtbaar</strong> (door niemand gekozen) of <strong>Gemiddeld</strong>. Lees ook altijd de aandachtspunten: een leerling met veel negatieve keuzes en één vriend krijgt "Gemiddeld", maar staat wel bij de aandachtspunten.</p>
       <h4>Isolaten en risicoprofielen</h4>
       <p>Leerlingen zonder positieve keuzes worden automatisch gemarkeerd als aandachtspunt.</p>
       <h4>Exporteren</h4>
-      <p>Het diagram kan geëxporteerd worden als PNG voor gebruik in leerlingbesprekingen of het leerlingvolgsysteem. Zorg dat je de juiste privacymaatregelen volgt bij het opslaan.</p>
+      <p>De app bewaart niets. Gebruik <strong>Afdrukken</strong> (ook om als PDF op te slaan) of <strong>Kopiëren als tekst (Excel)</strong> voor een leerlingbespreking of het leerlingvolgsysteem. Bewaar het resultaat enkel op een afgeschermde plek.</p>
       <div class="help-tip"><strong>Bespreken:</strong> bespreek resultaten altijd in teamverband en deel nooit individuele sociogrammen met leerlingen of ouders.</div></div></div>
-  <div class="help-footer">Scholengroep Londerzeel BaO — ict@centrumschool.londerzeel.be</div>
+  <div class="help-footer">Scholengroep Londerzeel BaO — ict@londerwijs.londerzeel.be</div>
 </div>
 
 </body>
